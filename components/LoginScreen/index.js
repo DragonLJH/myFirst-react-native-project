@@ -1,6 +1,7 @@
 import * as React from 'react';
-import { Button, View, Text, TextInput } from 'react-native';
+import { Button, View, Alert, TextInput } from 'react-native';
 import axios from 'axios'
+import { AuthContext } from "../../AuthContext"
 // import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ navigation }) {
@@ -8,17 +9,29 @@ export default function LoginScreen({ navigation }) {
     const [userName, setLoginVal] = React.useState('');
     const [userPassword, setPasswordVal] = React.useState('');
 
-    const loginClick = () => {
-        axios({ url: "http://150.158.96.29:8781/user/queryUserByUserName", method: "get", params: { userName, userPassword } })
-            .then((val) => {
-                if (val.data) {
-                    navigation.navigate('TabStack', { userName })
+    const { signIn } = React.useContext(AuthContext);
 
-                }
-                // console.log("axios", val.data, navigation)
-            })
-        // console.log(loginVal, passwordVal)
+    const loginClick = () => {
+        signIn({ userName, userPassword }).then((val) => {
+            if (val) {
+                navigation.navigate('TabStack', { userName })
+            } else {
+                Alert.alert(
+                    "提示",
+                    "账号或密码错误",
+                    [
+                        {
+                            text: "关闭",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                        },
+                    ]
+                );
+            }
+        })
+        resetClick()
     }
+
     const resetClick = () => {
         setLoginVal("")
         setPasswordVal("")
@@ -26,7 +39,6 @@ export default function LoginScreen({ navigation }) {
 
     return (
         <View style>
-            <Text>登陆</Text>
             <TextInput
                 placeholder="输入账号"
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
@@ -38,6 +50,7 @@ export default function LoginScreen({ navigation }) {
                 style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                 onChangeText={text => setPasswordVal(text)}
                 value={userPassword}
+                secureTextEntry
             />
 
             <Button title="Login" onPress={loginClick} />

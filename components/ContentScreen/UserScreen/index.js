@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { Button, View, Text, TextInput } from 'react-native';
-import axios from 'axios'
+import { AuthContext } from "../../../AuthContext"
 
-export default function UserScreen({navigation }) {
+export default function UserScreen({ navigation }) {
+    const { signOut } = React.useContext(AuthContext)
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <Text>UserScreen Screen</Text>
-            {/* <Button
-                title="Go to Details"
-                onPress={() => navigation.navigate('Details')}
-            /> */}
+            <Button
+                title="退出"
+                onPress={() => signOut(navigation)}
+            />
         </View>
     );
 }
