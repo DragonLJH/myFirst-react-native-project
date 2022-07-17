@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { SafeAreaView, ScrollView, View, Text, Image, Dimensions, StyleSheet } from 'react-native';
+import { ScrollView, View, Text, Image, Dimensions } from 'react-native';
 // import { Provider, Carousel } from '@ant-design/react-native';
 import { Carousel } from '@ant-design/react-native';
 import { GetProductById } from '../../../api/index'
@@ -11,8 +11,9 @@ export default function ProductDetailsScreen({ navigation }) {
     const [akey, setAkey] = React.useState([])
     const [rotationImgs, setRotationImgs] = React.useState([])
     const [msgImgs, setMsgImgs] = React.useState([])
+    const [size, setSizes] = React.useState([])
+    const [color, setColor] = React.useState([])
     const [selectedIndex, setSelectedIndex] = React.useState(0)
-    const [autoplay, setAutoplay] = React.useState(true)
     const [carousel, setCarousel] = React.useState(null)
 
     React.useEffect(() => {
@@ -21,14 +22,8 @@ export default function ProductDetailsScreen({ navigation }) {
     }, [])
 
     const onHorizontalSelectedIndexChange = (index) => {
-        /* tslint:disable: no-console */
-        console.log('horizontal change to', index)
-        setSelectedIndex(index)
+        //监听轮播图
     }
-    // const onVerticalSelectedIndexChange = (index) => {
-    //     /* tslint:disable: no-console */
-    //     console.log('vertical change to', index)
-    // }
 
     const getProduct = () => {
         GetProductById("/product/queryProductById", { params: { productId: 1 } })
@@ -36,114 +31,77 @@ export default function ProductDetailsScreen({ navigation }) {
                 setProduct(res)
                 let objRes = Object.keys(res)
                 objRes = objRes.filter((val) => {
-                    return !["productRotationImg", "productMsgImg"].includes(val)
+                    return !["productRotationImg", "productMsgImg", "productSize", "productColor"].includes(val)
                 })
                 setAkey(objRes)
                 setRotationImgs(res["productRotationImg"])
                 setMsgImgs(res["productMsgImg"])
+                setSizes(res["productSize"])
+                setColor(res["productColor"])
             })
     }
 
     const ResView = (props) => {
+
         const { myKey } = props
-        if (myKey.indexOf("Img") != -1) return <Image style={{ width: w.width, height: w.height }} source={{ uri: product[myKey][0] }} />
-        else return <Text>{product[myKey]}</Text>
+        console.log(myKey, product[myKey])
+        return <Text>{product[myKey]}</Text>
+    }
+    const MsgView = () => {
+
+        return (
+            <View>
+                <View >
+                    <Text style={{ color: "#990" }}>{product["productMsg"]}</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text>销售价格：{product["productSellingPrice"]}</Text><Text>原价：{product["productPrice"]}</Text>
+                </View>
+                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                    <Text>库存：{product["productStock"]}</Text><Text>销量：{product["productSalesVolume"]}</Text>
+                </View>
+            </View>
+        )
     }
 
+
     return (
-        <SafeAreaView >
-            <ScrollView  >
-
-                <View style={{ width: w.width, height: w.width }}>
-                    <Carousel
-                        style={styles.wrapper}
-                        selectedIndex={selectedIndex}
-                        autoplay
-                        infinite
-                        afterChange={onHorizontalSelectedIndexChange}
-                        ref={(ref) => (setCarousel(ref))}>
-                        <View style={[styles.containerHorizontal, { backgroundColor: 'red' }]}>
-                            <Text>Carousel 1</Text>
-                        </View>
-                        <View style={[styles.containerHorizontal, { backgroundColor: 'blue' }]}>
-                            <Text>Carousel 2</Text>
-                        </View>
-                    </Carousel>
-                </View>
-                <Text>productDetailsScreen</Text>
-                {/* <ScrollView style={{ flexDirection: "row", justifyContent: "space-around" }}> */}
-                <View style={{ flex: 1, flexDirection: "row", }}>
-                    {rotationImgs.map((val, index) => {
-                        return <View style={{ flex: 1, width: w.width, height: w.width }} key={index}><Image style={{ flex: 1 }} source={{ uri: val }} /></View>
-                    })}
-                </View>
-
-                <View>
-                    {akey.map((val, index) => <ResView key={index} myKey={val} />)}
-                </View>
-
-                <View style={{ flexDirection: "column" }}>
-                    {msgImgs.map((val, index) => {
-                        return <View style={{ flex: 1, width: w.width, height: w.width }} key={index}><Image style={{ flex: 1 }} source={{ uri: val }} /></View>
-                    })}
-                </View>
-                {/* <Carousel
-                    style={styles.wrapper}
+        <ScrollView style={{ backgroundColor: "#eee" }}>
+            <View style={{ width: w.width, height: w.width }}>
+                <Carousel
+                    style={{ backgroundColor: '#ccc', width: w.width, height: w.width }}
                     selectedIndex={selectedIndex}
                     autoplay
                     infinite
                     afterChange={onHorizontalSelectedIndexChange}
-                    ref={(ref) => (this.carousel = ref)}>
-                    <View
-                        style={[styles.containerHorizontal, { backgroundColor: 'red' }]}>
-                        <Text>Carousel 1</Text>
-                    </View>
-                    <View
-                        style={[styles.containerHorizontal, { backgroundColor: 'blue' }]}>
-                        <Text>Carousel 2</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.containerHorizontal,
-                            { backgroundColor: 'yellow' },
-                        ]}>
-                        <Text>Carousel 3</Text>
-                    </View>
-                    <View
-                        style={[styles.containerHorizontal, { backgroundColor: 'aqua' }]}>
-                        <Text>Carousel 4</Text>
-                    </View>
-                    <View
-                        style={[
-                            styles.containerHorizontal,
-                            { backgroundColor: 'fuchsia' },
-                        ]}>
-                        <Text>Carousel 5</Text>
-                    </View>
-                </Carousel> */}
-            </ScrollView>
-        </SafeAreaView >
+                >
+                    {/* <View style={[styles.containerHorizontal, { backgroundColor: 'red' }]}>
+                            <Text>Carousel 1</Text>
+                        </View> */}
+                    {rotationImgs.map((val, index) => {
+                        return <View style={{ flexGrow: 1, }} key={index}><Image style={{ flex: 1 }} source={{ uri: val }} /></View>
+                    })}
+                </Carousel>
+            </View>
+
+            {/* <View style={{ backgroundColor: "#fff", padding: 10, margin: 10, borderWidth: 1, borderRadius: 20, }}>
+                {akey.map((val, index) => <ResView key={index} myKey={val} />)}
+            </View> */}
+            <View style={{ backgroundColor: "#fff", padding: 10, margin: 10, borderWidth: 1, borderRadius: 20, }}>
+                <MsgView />
+            </View>
+
+
+            <View style={{ flexDirection: "row", justifyContent: "center" }}>
+                <Text>宝贝详情</Text>
+            </View>
+            <View style={{ flexDirection: "column" }}>
+                {msgImgs.map((val, index) => {
+                    return <View style={{ flex: 1, width: w.width, height: w.width }} key={index}><Image style={{ flex: 1 }} source={{ uri: val }} /></View>
+                })}
+            </View>
+
+        </ScrollView>
     );
 }
 
-const styles = StyleSheet.create({
-    wrapper: {
-        backgroundColor: '#ccc', width: w.width, height: w.width
-    },
-    containerHorizontal: {
-        flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 150,
-    },
-    containerVertical: {
-        flexGrow: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: 150,
-    },
-    text: {
-        color: '#fff',
-        fontSize: 36,
-    },
-});
