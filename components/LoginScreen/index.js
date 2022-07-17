@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Button, View, Alert, TextInput } from 'react-native';
+import { ScrollView, Alert, } from 'react-native';
+import { InputItem, Button } from '@ant-design/react-native';
 import axios from 'axios'
 import { AuthContext } from "../../AuthContext"
-// import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen({ navigation }) {
-    // const navigation = useNavigation();
     const [userName, setLoginVal] = React.useState('');
     const [userPassword, setPasswordVal] = React.useState('');
 
@@ -38,24 +37,24 @@ export default function LoginScreen({ navigation }) {
     }
 
     return (
-        <View style>
-            <TextInput
+        <ScrollView keyboardShouldPersistTaps='always'>
+            <InputItem
+                clear
+                type="phone"
                 placeholder="输入账号"
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                 onChangeText={text => setLoginVal(text)}
                 value={userName}
             />
-            <TextInput
+            <InputItem
+                clear
+                type="password"
                 placeholder="输入密码"
-                style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
                 onChangeText={text => setPasswordVal(text)}
                 value={userPassword}
-                secureTextEntry
             />
+            <Button type="primary" onPress={loginClick}>Login</Button>
 
-            <Button title="Login" onPress={loginClick} />
-            <Button title="Reset" onPress={resetClick} />
-        </View>
+        </ScrollView>
     );
 }
 
