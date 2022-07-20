@@ -3,7 +3,7 @@ import { Button, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthContext } from "./AuthContext"
-import axios from 'axios'
+import { MySignIn } from './api/index.js'
 import LoginScreen from "./components/LoginScreen/index"
 import ContentScreen from "./components/ContentScreen/index"
 
@@ -15,22 +15,14 @@ export default function App() {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
-        case 'RESTORE_TOKEN':
-          return {
-            ...prevState,
-            userToken: action.token,
-            isLoading: false,
-          };
         case 'SIGN_IN':
           return {
             ...prevState,
-            isSignout: false,
             userToken: action.token,
           };
         case 'SIGN_OUT':
           return {
             ...prevState,
-            isSignout: true,
             userToken: null,
           };
       }
@@ -45,10 +37,10 @@ export default function App() {
     () => ({
       signIn: async (data) => {
         const { userName, userPassword } = data
-        return axios({ url: "http://150.158.96.29:8781/user/queryUserByUserName", method: "get", params: { userName, userPassword } })
-          .then((val) => {
-            if (val?.data && val.data) {
-              dispatch({ type: 'SIGN_IN', token: 'dummy-auth-token' });
+        return MySignIn("/user/queryUserByUserName", { params: { userName, userPassword } })
+          .then((res) => {
+            if (res) {
+              dispatch({ type: 'SIGN_IN', token: userName });//登陆成功的时候再显示主页
               return true
             } else {
               return false
@@ -56,8 +48,8 @@ export default function App() {
           })
       },
       signOut: (data) => {
-        console.log("signOut",data)
-        dispatch({ type: 'SIGN_OUT' })
+        data.navigate('Login')// data === user页面的 navigate ， 根据navigate来跳转回登陆页 来实现退出效果
+        // dispatch({ type: 'SIGN_OUT' })//控制userToken 隐藏主页 来实现退出效果
       }
     }),
     []
@@ -66,8 +58,10 @@ export default function App() {
     <AuthContext.Provider value={authContext}>
       <NavigationContainer>
         <FStack.Navigator>
-          <FStack.Screen name="登陆" component={LoginScreen} />
-          {state.userToken ? <FStack.Screen name="TabStack" component={ContentScreen} options={{ headerShown: false }} /> : <></>}
+          <FStack.Screen name="Login" component={LoginScreen} />
+          <FStack.Screen name="TabStack" component={ContentScreen} options={{ headerShown: false }} />
+          {/* 根据控制userToken来显示隐藏主页 */}
+          {/* {state.userToken ? <FStack.Screen name="TabStack" component={ContentScreen} options={{ headerShown: false }} /> : <></>} */}
         </FStack.Navigator>
       </NavigationContainer>
     </AuthContext.Provider>
