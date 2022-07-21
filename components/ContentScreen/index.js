@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import HomeScreen from "./HomeScreen/index"
+import { Button, View, Text, DrawerButton } from 'react-native';
+import HomeScreen from "./HomeScreen/HomeScreen"
+import ProductDetailsScreen from "./HomeScreen/ProductDetailsScreen"
 import ShoppingCartScreen from "./ShoppingCartScreen/index"
 import UserScreen from "./UserScreen/index"
 
@@ -10,16 +12,21 @@ const HomeStack = createNativeStackNavigator();
 const ShoppingCartStack = createNativeStackNavigator();
 const UserStack = createNativeStackNavigator();
 
-export default function TabStack({ route ,navigation}) {
+export default function TabStack({ route, navigation }) {
     let { userName } = route.params;
     console.log("userName", userName)
     return (
+
         <Tab.Navigator screenOptions={{ headerShown: false }}>
+
             <Tab.Screen name="HomeStack">
                 {() => (
                     <HomeStack.Navigator>
                         {/* XXXStack.Screen 中使用options={{ headerShown: false }}隐藏头部标题 */}
-                        <HomeStack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+                        <HomeStack.Screen name="Home" component={HomeScreen} options={{
+                            title: '首页'
+                        }} />
+                        <HomeStack.Screen name="ProductDetails" component={ProductDetailsScreen} />
                     </HomeStack.Navigator>
                 )}
             </Tab.Screen>
