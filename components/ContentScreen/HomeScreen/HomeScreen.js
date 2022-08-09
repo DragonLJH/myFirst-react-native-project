@@ -5,18 +5,12 @@ import axios from 'axios'
 
 
 export default function HomeScreen({ navigation }) {
-    const [miankey, setMainKey] = React.useState('')
+    // const [miankey, setMainKey] = React.useState('')
 
     const [searchVal, setSearchVal] = React.useState('')
 
     const submitSearch = () => {
-        navigation.navigate('ProductDetails', { searchVal })
-        // Toast.loading('Loading...', 0, () => {
-        //     Toast.info('Toast.loading onClose callback called!')
-        // })
-        // setTimeout(() => {
-        //     Toast.removeAll()
-        // }, 3000)
+        navigation.navigate('Search', { searchVal })
     }
 
     const clearSearch = (val) => {

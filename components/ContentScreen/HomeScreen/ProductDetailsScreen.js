@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { ScrollView, View, Text, Image, Dimensions } from 'react-native';
 // import { Provider, Carousel } from '@ant-design/react-native';
-import { Carousel } from '@ant-design/react-native';
+import { Carousel, SearchBar } from '@ant-design/react-native';
 import { GetProductById } from '../../../api/index'
 
 const w = Dimensions.get("window")
 
-export default function ProductDetailsScreen({ navigation }) {
+export default function ProductDetailsScreen({ route, navigation }) {
+    let { searchVal } = route.params;
     const [product, setProduct] = React.useState({})
     const [akey, setAkey] = React.useState([])
     const [rotationImgs, setRotationImgs] = React.useState([])
@@ -16,9 +17,10 @@ export default function ProductDetailsScreen({ navigation }) {
     const [selectedIndex, setSelectedIndex] = React.useState(0)
     const [carousel, setCarousel] = React.useState(null)
 
+
     React.useEffect(() => {
         getProduct()
-        return
+        console.log("searchVal", searchVal)
     }, [])
 
     const onHorizontalSelectedIndexChange = (index) => {
@@ -26,7 +28,7 @@ export default function ProductDetailsScreen({ navigation }) {
     }
 
     const getProduct = () => {
-        GetProductById("/product/queryProductById", { params: { productId: 1 } })
+        GetProductById("/product/queryProductById", { params: { productId: searchVal } })
             .then((res) => {
                 setProduct(res)
                 let objRes = Object.keys(res)
@@ -97,7 +99,10 @@ export default function ProductDetailsScreen({ navigation }) {
             </View>
             <View style={{ flexDirection: "column" }}>
                 {msgImgs.map((val, index) => {
-                    return <View style={{ flex: 1, width: w.width, height: w.width }} key={index}><Image style={{ flex: 1 }} source={{ uri: val }} /></View>
+                    return <View style={{ flex: 1, width: w.width, height: w.width }} key={index}><Image style={{
+                        resizeMode: "stretch",
+                        flex: 1
+                    }} source={{ uri: val }} /></View>
                 })}
             </View>
 

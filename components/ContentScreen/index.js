@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Button, View, Text, DrawerButton } from 'react-native';
 import HomeScreen from "./HomeScreen/HomeScreen"
 import ProductDetailsScreen from "./HomeScreen/ProductDetailsScreen"
+import SearchScreen from "./HomeScreen/SearchScreen"
 import ShoppingCartScreen from "./ShoppingCartScreen/index"
 import UserScreen from "./UserScreen/index"
 
@@ -27,6 +28,7 @@ export default function TabStack({ route, navigation }) {
                             title: '首页'
                         }} />
                         <HomeStack.Screen name="ProductDetails" component={ProductDetailsScreen} />
+                        <HomeStack.Screen name="Search" component={SearchScreen} />
                     </HomeStack.Navigator>
                 )}
             </Tab.Screen>

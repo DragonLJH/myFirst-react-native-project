@@ -10,3 +10,7 @@ export function MySignIn(url, config) {
 export function GetProductById(url, config) {
     return myAxios.get(url, config)
 }
+
+export function GetProductByMsg(url, config) {
+    return myAxios.get(url, config)
+}

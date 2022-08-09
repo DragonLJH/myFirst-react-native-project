@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Button, View, Text } from 'react-native';
-import { SearchBar } from '@ant-design/react-native';
+import { View, Text, Image } from 'react-native';
+import { SearchBar, Card, Flex, Button } from '@ant-design/react-native';
 import { GetProductByMsg } from '../../../api/index'
 
 
@@ -27,6 +27,7 @@ export default function SearchScreen({ route, navigation }) {
     const getProductList = () => {
         GetProductByMsg("/product/queryProductByProductMsg", { params: { productMsg: searchVal } })
             .then((res) => {
+                console.log(res)
                 setProductList(res)
             })
     }
@@ -38,11 +39,37 @@ export default function SearchScreen({ route, navigation }) {
                 onSubmit={submitSearch}
                 onChange={(val) => setSearchVal(val)}
                 onCancel={clearSearch} />
+            {/* <Flex wrap="wrap">
+                {'ooooooooooooooooooooooooooooo'
+                    .split('')
+                    .map((char, i) => <Circle key={`${i}-${char}`} />)}
+            </Flex> */}
             <View>
-                {productList.map((val,index)=>{
-                    return <Text key={index}>{val.productName}</Text>
+                {productList.map((val, index) => {
+                    return (
+                        <Card key={index}>
+                            {/* <Card.Header
+                                title={val.productName}
+                                thumbStyle={{ width: 100, height: 100, resizeMode: "stretch" }}
+                                thumb={val.productRotationImg[0]}
+
+                            /> */}
+                            <Card.Body>
+                                <View style={{ flexDirections: "row" }}>
+                                    <View style={{ flex: 1, minWidth: 50, minHeight: 50, width: 50, height: 50 }}>
+                                        <Image style={{ flex: 1 }} source={{ uri: val.productRotationImg[0] }} />
+                                    </View>
+                                    <View style={{ flex: 2 }}>
+                                        <Text style={{ marginLeft: 16 }}>{val.productName}</Text>
+                                        <Text style={{ marginLeft: 16 }}>{val.productMsg}</Text>
+                                    </View>
+                                </View>
+                            </Card.Body>
+                            {/* <Card.Footer /> */}
+                        </Card>
+                    )
                 })}
-                
+
 
             </View>
 

@@ -50,7 +50,7 @@ export default function App() {
       signOut: (data) => {
         data.navigate('Login')// data === user页面的 navigate ， 根据navigate来跳转回登陆页 来实现退出效果
         // dispatch({ type: 'SIGN_OUT' })//控制userToken 隐藏主页 来实现退出效果
-      }
+      },
     }),
     []
   );
